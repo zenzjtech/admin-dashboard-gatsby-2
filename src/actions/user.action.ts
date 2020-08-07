@@ -20,7 +20,7 @@ function login(email, password) {
 }
 
 function logout() {
-  userService.logout();
+  navigate('/login')
   return { type: userConstants.LOGOUT };
 }
 

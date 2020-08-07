@@ -5,9 +5,7 @@ import { connect } from 'react-redux'
 const IndexPage = (props) => {
 	const destination = props.loggedIn ? '/dashboard' : '/login'
 	navigate(destination)
-	return (
-		<></>
-	)
+	return null;
 };
 
 const mapStateToProps = (state) => {

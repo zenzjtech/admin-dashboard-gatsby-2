@@ -23,8 +23,7 @@ function login(email, password) {
 }
 
 function logout() {
-  // remove user from local storage to log user out
-  // typeof window !== "undefined" && localStorage.removeItem(userConstants.KEY_USER);
+
 }
 
 function handleResponse(response) {
