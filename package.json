@@ -39,10 +39,10 @@
   "scripts": {
     "build": "gatsby build",
     "clean": "rm -rf public && rm -rf .cache",
-    "dev": "NODE_ENV=development rm -rf ./.cache && yarn && gatsby develop -H 0.0.0.0",
-    "develop": "yarn dev",
+    "dev": "NODE_ENV=development rm -rf ./.cache && gatsby develop -H 0.0.0.0",
+    "develop": "npm dev",
     "format": "prettier --write src/**/*.{js,jsx}",
-    "prebuild": "yarn clean && yarn",
-    "start": "yarn develop"
+    "prebuild": "npm clean && npm",
+    "start": "npm develop"
   }
 }
