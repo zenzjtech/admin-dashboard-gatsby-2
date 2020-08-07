@@ -10,7 +10,7 @@ import theme from './theme';
 import Store from './store';
 import { configureFakeBackend } from 'helpers';
 
-const history = createMemoryHistory();
+const history = typeof window  === 'undefined' ? createMemoryHistory() : createBrowserHistory();
 
 /*
 console.log(process.env.GATSBY_FAKE_BACKEND);
