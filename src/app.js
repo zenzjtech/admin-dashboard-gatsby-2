@@ -1,11 +1,16 @@
 import React from 'react'
 import { Provider } from 'react-redux'
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { PersistGate } from 'redux-persist/integration/react'
 import { ThemeProvider } from '@material-ui/core/styles';
-
+import { CssBaseline} from '@material-ui/core'
 import theme from './theme';
 import Store from './store';
 import { configureFakeBackend } from 'helpers';
-import { PersistGate } from 'redux-persist/integration/react'
+
+const browserHistory = createBrowserHistory();
+
 /*
 console.log(process.env.GATSBY_FAKE_BACKEND);
 if (process.env.GATSBY_FAKE_BACKEND !== '0') {
@@ -24,7 +29,10 @@ export default ({ element }) => {
 					loading={null}
 					persistor={Store.persistor}
 				>
-					{ element }
+					<CssBaseline/>
+					<Router history={browserHistory}>
+						{ element }
+					</Router>
 				</PersistGate>
 			</Provider>
 		</ThemeProvider>

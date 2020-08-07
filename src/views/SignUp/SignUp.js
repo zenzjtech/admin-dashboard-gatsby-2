@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { navigate } from '@reach/router'
+import { Link as RouterLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import {
   Grid,
   Button,
   IconButton,
   TextField,
+  Link,
+  FormHelperText,
+  Checkbox,
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-import { userActions } from '../../actions';
-import Error from '../Error'
-
 const schema = {
+  firstName: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32
+    }
+  },
+  lastName: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32
+    }
+  },
   email: {
     presence: { allowEmpty: false, message: 'is required' },
     email: true,
@@ -29,6 +40,10 @@ const schema = {
     length: {
       maximum: 128
     }
+  },
+  policy: {
+    presence: { allowEmpty: false, message: 'is required' },
+    checked: true
   }
 };
 
@@ -49,10 +64,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.neutral,
     height: '100%',
     display: 'flex',
-    minHeight: 'calc(100vh - 64px)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(/images/auth.jpg)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center'
@@ -110,61 +124,55 @@ const useStyles = makeStyles(theme => ({
   title: {
     marginTop: theme.spacing(3)
   },
-  socialButtons: {
-    marginTop: theme.spacing(3)
-  },
-  socialIcon: {
-    marginRight: theme.spacing(1)
-  },
-  suggestion: {
-    marginTop: theme.spacing(2)
-  },
   textField: {
     marginTop: theme.spacing(2)
   },
-  signInButton: {
+  policy: {
+    marginTop: theme.spacing(1),
+    display: 'flex',
+    alignItems: 'center'
+  },
+  policyCheckbox: {
+    marginLeft: '-14px'
+  },
+  signUpButton: {
     margin: theme.spacing(2, 0)
   }
 }));
 
-const SignIn = props => {
+const SignUp = props => {
   const { history } = props;
-  
+
   const classes = useStyles();
-  
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
     touched: {},
-    errors: {},
-    loginError: ''
+    errors: {}
   });
-  
+
   useEffect(() => {
     const errors = validate(formState.values, schema);
-    
+
     setFormState(formState => ({
       ...formState,
       isValid: errors ? false : true,
       errors: errors || {}
     }));
   }, [formState.values]);
-  
-  const handleBack = () => {
-    history.goBack();
-  };
-  
+
   const handleChange = event => {
     event.persist();
-    
+
     setFormState(formState => ({
       ...formState,
       values: {
         ...formState.values,
         [event.target.name]:
-            event.target.type === 'checkbox'
-              ? event.target.checked
-              : event.target.value
+          event.target.type === 'checkbox'
+            ? event.target.checked
+            : event.target.value
       },
       touched: {
         ...formState.touched,
@@ -172,34 +180,19 @@ const SignIn = props => {
       }
     }));
   };
-  
-  const handleSignIn = event => {
-    event.preventDefault();
-    const { email, password } = formState.values;
-    props
-        .userLogin(email, password)
-        .then(() => {
-          navigate('/');
-        })
-        .catch(error => {
-          setFormState({
-            ...formState,
-            loginError: error
-          })
-        })
-    // history.push('/');
+
+  const handleBack = () => {
+    history.goBack();
   };
-  
-  const clearLoginError = () => {
-    setFormState({
-      ...formState,
-      loginError: ''
-    })
-  }
-  
+
+  const handleSignUp = event => {
+    event.preventDefault();
+    history.push('/');
+  };
+
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  
+
   return (
     <div className={classes.root}>
       <Grid
@@ -217,21 +210,21 @@ const SignIn = props => {
                 className={classes.quoteText}
                 variant="h1"
               >
-                <p>Please enter your details to enter your account</p>
-                <p>If you've forgotten your password, please use the reset link below the Login button</p>
+                Hella narwhal Cosby sweater McSweeney's, salvia kitsch before
+                they sold out High Life.
               </Typography>
               <div className={classes.person}>
                 <Typography
                   className={classes.name}
                   variant="body1"
                 >
-                    Hello world
+                  Takamaru Ayako
                 </Typography>
                 <Typography
                   className={classes.bio}
                   variant="body2"
                 >
-                    Admin dashboard
+                  Manager at inVision
                 </Typography>
               </div>
             </div>
@@ -252,19 +245,48 @@ const SignIn = props => {
             <div className={classes.contentBody}>
               <form
                 className={classes.form}
-                onSubmit={handleSignIn}
+                onSubmit={handleSignUp}
               >
                 <Typography
                   className={classes.title}
                   variant="h2"
                 >
-                    Sign in
+                  Create new account
                 </Typography>
-                <Grid
-                  className={classes.socialButtons}
-                  container
-                  spacing={2}
+                <Typography
+                  color="textSecondary"
+                  gutterBottom
                 >
+                  Use your email to create new account
+                </Typography>
+                <TextField
+                  className={classes.textField}
+                  error={hasError('firstName')}
+                  fullWidth
+                  helperText={
+                    hasError('firstName') ? formState.errors.firstName[0] : null
+                  }
+                  label="First name"
+                  name="firstName"
+                  onChange={handleChange}
+                  type="text"
+                  value={formState.values.firstName || ''}
+                  variant="outlined"
+                />
+                <TextField
+                  className={classes.textField}
+                  error={hasError('lastName')}
+                  fullWidth
+                  helperText={
+                    hasError('lastName') ? formState.errors.lastName[0] : null
+                  }
+                  label="Last name"
+                  name="lastName"
+                  onChange={handleChange}
+                  type="text"
+                  value={formState.values.lastName || ''}
+                  variant="outlined"
+                />
                 <TextField
                   className={classes.textField}
                   error={hasError('email')}
@@ -278,7 +300,6 @@ const SignIn = props => {
                   type="text"
                   value={formState.values.email || ''}
                   variant="outlined"
-                  onFocus={clearLoginError}
                 />
                 <TextField
                   className={classes.textField}
@@ -293,11 +314,39 @@ const SignIn = props => {
                   type="password"
                   value={formState.values.password || ''}
                   variant="outlined"
-                  onFocus={clearLoginError}
                 />
-                { formState.loginError && <Error error={formState.loginError}/> }
+                <div className={classes.policy}>
+                  <Checkbox
+                    checked={formState.values.policy || false}
+                    className={classes.policyCheckbox}
+                    color="primary"
+                    name="policy"
+                    onChange={handleChange}
+                  />
+                  <Typography
+                    className={classes.policyText}
+                    color="textSecondary"
+                    variant="body1"
+                  >
+                    I have read the{' '}
+                    <Link
+                      color="primary"
+                      component={RouterLink}
+                      to="#"
+                      underline="always"
+                      variant="h6"
+                    >
+                      Terms and Conditions
+                    </Link>
+                  </Typography>
+                </div>
+                {hasError('policy') && (
+                  <FormHelperText error>
+                    {formState.errors.policy[0]}
+                  </FormHelperText>
+                )}
                 <Button
-                  className={classes.signInButton}
+                  className={classes.signUpButton}
                   color="primary"
                   disabled={!formState.isValid}
                   fullWidth
@@ -305,9 +354,21 @@ const SignIn = props => {
                   type="submit"
                   variant="contained"
                 >
-                    Sign in now
+                  Sign up now
                 </Button>
-                </Grid>
+                <Typography
+                  color="textSecondary"
+                  variant="body1"
+                >
+                  Have an account?{' '}
+                  <Link
+                    component={RouterLink}
+                    to="/sign-in"
+                    variant="h6"
+                  >
+                    Sign in
+                  </Link>
+                </Typography>
               </form>
             </div>
           </div>
@@ -317,20 +378,8 @@ const SignIn = props => {
   );
 };
 
-SignIn.propTypes = {
+SignUp.propTypes = {
   history: PropTypes.object
 };
 
-const mapStateToProps = (state) => {
-  return {
-    loggedIn: state.auth.loggedIn
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    userLogin: (email, password) => dispatch(userActions.login(email, password))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default withRouter(SignUp);

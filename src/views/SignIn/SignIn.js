@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { navigate } from '@reach/router'
+import { Link as RouterLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 import {
   Grid,
   Button,
   IconButton,
   TextField,
+  Link,
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-import { userActions } from '../../actions';
-import Error from '../Error'
+import { Facebook as FacebookIcon, Google as GoogleIcon } from 'icons';
 
 const schema = {
   email: {
@@ -49,10 +48,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.neutral,
     height: '100%',
     display: 'flex',
-    minHeight: 'calc(100vh - 64px)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(/images/auth.jpg)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center'
@@ -116,7 +114,7 @@ const useStyles = makeStyles(theme => ({
   socialIcon: {
     marginRight: theme.spacing(1)
   },
-  suggestion: {
+  sugestion: {
     marginTop: theme.spacing(2)
   },
   textField: {
@@ -129,42 +127,41 @@ const useStyles = makeStyles(theme => ({
 
 const SignIn = props => {
   const { history } = props;
-  
+
   const classes = useStyles();
-  
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
     touched: {},
-    errors: {},
-    loginError: ''
+    errors: {}
   });
-  
+
   useEffect(() => {
     const errors = validate(formState.values, schema);
-    
+
     setFormState(formState => ({
       ...formState,
       isValid: errors ? false : true,
       errors: errors || {}
     }));
   }, [formState.values]);
-  
+
   const handleBack = () => {
     history.goBack();
   };
-  
+
   const handleChange = event => {
     event.persist();
-    
+
     setFormState(formState => ({
       ...formState,
       values: {
         ...formState.values,
         [event.target.name]:
-            event.target.type === 'checkbox'
-              ? event.target.checked
-              : event.target.value
+          event.target.type === 'checkbox'
+            ? event.target.checked
+            : event.target.value
       },
       touched: {
         ...formState.touched,
@@ -172,34 +169,15 @@ const SignIn = props => {
       }
     }));
   };
-  
+
   const handleSignIn = event => {
     event.preventDefault();
-    const { email, password } = formState.values;
-    props
-        .userLogin(email, password)
-        .then(() => {
-          navigate('/');
-        })
-        .catch(error => {
-          setFormState({
-            ...formState,
-            loginError: error
-          })
-        })
-    // history.push('/');
+    history.push('/');
   };
-  
-  const clearLoginError = () => {
-    setFormState({
-      ...formState,
-      loginError: ''
-    })
-  }
-  
+
   const hasError = field =>
     formState.touched[field] && formState.errors[field] ? true : false;
-  
+
   return (
     <div className={classes.root}>
       <Grid
@@ -217,21 +195,21 @@ const SignIn = props => {
                 className={classes.quoteText}
                 variant="h1"
               >
-                <p>Please enter your details to enter your account</p>
-                <p>If you've forgotten your password, please use the reset link below the Login button</p>
+                Hella narwhal Cosby sweater McSweeney's, salvia kitsch before
+                they sold out High Life.
               </Typography>
               <div className={classes.person}>
                 <Typography
                   className={classes.name}
                   variant="body1"
                 >
-                    Hello world
+                  Takamaru Ayako
                 </Typography>
                 <Typography
                   className={classes.bio}
                   variant="body2"
                 >
-                    Admin dashboard
+                  Manager at inVision
                 </Typography>
               </div>
             </div>
@@ -258,13 +236,49 @@ const SignIn = props => {
                   className={classes.title}
                   variant="h2"
                 >
-                    Sign in
+                  Sign in
+                </Typography>
+                <Typography
+                  color="textSecondary"
+                  gutterBottom
+                >
+                  Sign in with social media
                 </Typography>
                 <Grid
                   className={classes.socialButtons}
                   container
                   spacing={2}
                 >
+                  <Grid item>
+                    <Button
+                      color="primary"
+                      onClick={handleSignIn}
+                      size="large"
+                      variant="contained"
+                    >
+                      <FacebookIcon className={classes.socialIcon} />
+                      Login with Facebook
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      onClick={handleSignIn}
+                      size="large"
+                      variant="contained"
+                    >
+                      <GoogleIcon className={classes.socialIcon} />
+                      Login with Google
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Typography
+                  align="center"
+                  className={classes.sugestion}
+                  color="textSecondary"
+                  variant="body1"
+                >
+                  or login with email address
+                </Typography>
                 <TextField
                   className={classes.textField}
                   error={hasError('email')}
@@ -278,7 +292,6 @@ const SignIn = props => {
                   type="text"
                   value={formState.values.email || ''}
                   variant="outlined"
-                  onFocus={clearLoginError}
                 />
                 <TextField
                   className={classes.textField}
@@ -293,9 +306,7 @@ const SignIn = props => {
                   type="password"
                   value={formState.values.password || ''}
                   variant="outlined"
-                  onFocus={clearLoginError}
                 />
-                { formState.loginError && <Error error={formState.loginError}/> }
                 <Button
                   className={classes.signInButton}
                   color="primary"
@@ -305,9 +316,21 @@ const SignIn = props => {
                   type="submit"
                   variant="contained"
                 >
-                    Sign in now
+                  Sign in now
                 </Button>
-                </Grid>
+                <Typography
+                  color="textSecondary"
+                  variant="body1"
+                >
+                  Don't have an account?{' '}
+                  <Link
+                    component={RouterLink}
+                    to="/sign-up"
+                    variant="h6"
+                  >
+                    Sign up
+                  </Link>
+                </Typography>
               </form>
             </div>
           </div>
@@ -321,16 +344,4 @@ SignIn.propTypes = {
   history: PropTypes.object
 };
 
-const mapStateToProps = (state) => {
-  return {
-    loggedIn: state.auth.loggedIn
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    userLogin: (email, password) => dispatch(userActions.login(email, password))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default withRouter(SignIn);
