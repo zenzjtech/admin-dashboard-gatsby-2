@@ -1,28 +1,18 @@
-import React from 'react'
-import { graphql } from 'gatsby'
-import Layout from 'components/Layout'
-import PropTypes from 'prop-types'
-import Content from 'components/Content'
+import React from 'react';
+import { navigate} from 'gatsby'
+import { connect } from 'react-redux'
 
-function DashboardIndex({ data, location }) {
-	const { title } = data.site.siteMetadata
+const IndexPage = (props) => {
+	const destination = props.loggedIn ? '/dashboard' : '/login'
+	navigate(destination)
 	return (
-		<Layout location={location} title={title}>
-			<Content />
-		</Layout>
+		<></>
 	)
-}
-DashboardIndex.propTypes = {
-	data: PropTypes.object.isRequired,
-	location: PropTypes.object,
-}
-export const pageQuery = graphql`
-	query {
-		site {
-			siteMetadata {
-				title
-			}
-		}
+};
+
+const mapStateToProps = (state) => {
+	return {
+		loggedIn: state.auth.loggedIn
 	}
-`
-export default DashboardIndex
+}
+export default connect(mapStateToProps)(IndexPage);
