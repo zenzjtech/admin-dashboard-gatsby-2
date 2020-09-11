@@ -1,20 +1,19 @@
-import { timesheetConstants } from '../constants';
+import { timesheetServices } from '../services/timesheet.service'
 
-async function getAllTimesheet() {
-	return async dispatch => {
+function getAllTimesheet() {
+	return async (dispatch, getState) => {
+		const state = getState();
+		const userId = state.profile.login.id;
+		const accessToken = state.auth.user.accessToken;
 		try {
-			const user = await userService.refreshToken(refreshToken)
-			dispatch({
-				type: userConstants.LOGIN_SUCCESS,
-				user
-			})
-			return user
+			const allTimesheet = await timesheetServices.getAllTimesheet(userId, accessToken);
+			return allTimesheet
 		} catch (error) {
-			dispatch({
-				type: userConstants.LOGIN_FAILURE,
-				error
-			})
 			throw error;
 		}
 	}
+}
+
+export const timesheetActions = {
+	getAllTimesheet
 }

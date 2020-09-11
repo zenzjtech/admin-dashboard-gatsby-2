@@ -1,4 +1,4 @@
-function handleResponse(response) {
+export function handleResponse(response) {
 	return response.text().then(text => {
 		const data = text && JSON.parse(text);
 		if (!response.ok) {
@@ -10,6 +10,4 @@ function handleResponse(response) {
 	});
 }
 
-export default {
-	handleResponse
-}
+

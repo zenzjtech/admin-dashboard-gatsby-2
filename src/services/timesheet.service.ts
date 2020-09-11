@@ -3,7 +3,7 @@ import { handleResponse } from './helper';
 
 function getAllTimesheet(userId, accessToken) {
 	const requestOptions = {
-		method: 'get',
+		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${accessToken}`

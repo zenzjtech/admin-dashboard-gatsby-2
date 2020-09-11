@@ -1,5 +1,6 @@
 // const apiUrl = process.env.GATSBY_API_URL;
 const apiUrl = 'https://bcf8e.l.dedikuoti.lt/api'
+import { handleResponse } from './helper';
 
 export const userService = {
   login,
@@ -54,14 +55,4 @@ function logout() {
 
 }
 
-function handleResponse(response) {
-  return response.text().then(text => {
-    const data = text && JSON.parse(text);
-    if (!response.ok) {
-      const error = (data && data.message) || response.statusText;
-      throw error;
-    }
 
-    return data;
-  });
-}
