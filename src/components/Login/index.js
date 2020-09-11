@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
-import { userActions } from '../../actions';
+import { profileActions, userActions } from '../../actions'
 import Error from '../Error'
 
 const schema = {
@@ -128,9 +128,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignIn = props => {
-  const { history } = props;
   
   const classes = useStyles();
+  const { userLogin, getCurrentUser } = props;
   
   const [formState, setFormState] = useState({
     isValid: false,
@@ -160,8 +160,8 @@ const SignIn = props => {
         ...formState.values,
         [event.target.name]:
             event.target.type === 'checkbox'
-              ? event.target.checked
-              : event.target.value
+                ? event.target.checked
+                : event.target.value
       },
       touched: {
         ...formState.touched,
@@ -173,8 +173,7 @@ const SignIn = props => {
   const handleSignIn = event => {
     event.preventDefault();
     const { email, password } = formState.values;
-    props
-        .userLogin(email, password)
+    userLogin(email, password)
         .then(() => {
           navigate('/');
         })
@@ -184,6 +183,7 @@ const SignIn = props => {
             loginError: error
           })
         })
+        .then(getCurrentUser);
     // history.push('/');
   };
   
@@ -195,122 +195,122 @@ const SignIn = props => {
   }
   
   const hasError = field =>
-    formState.touched[field] && formState.errors[field] ? true : false;
+      formState.touched[field] && formState.errors[field] ? true : false;
   
   return (
-    <div className={classes.root}>
-      <Grid
-        className={classes.grid}
-        container
-      >
+      <div className={classes.root}>
         <Grid
-          className={classes.quoteContainer}
-          item
-          lg={5}
+            className={classes.grid}
+            container
         >
-          <div className={classes.quote}>
-            <div className={classes.quoteInner}>
-              <Typography
-                className={classes.quoteText}
-                variant="h1"
-              >
-                <p>Please enter your details to enter your account</p>
-                <p>If you've forgotten your password, please use the reset link below the Login button</p>
-              </Typography>
-              <div className={classes.person}>
+          <Grid
+              className={classes.quoteContainer}
+              item
+              lg={5}
+          >
+            <div className={classes.quote}>
+              <div className={classes.quoteInner}>
                 <Typography
-                  className={classes.name}
-                  variant="body1"
+                    className={classes.quoteText}
+                    variant="h1"
                 >
+                  <p>Please enter your details to enter your account</p>
+                  <p>If you've forgotten your password, please use the reset link below the Login button</p>
+                </Typography>
+                <div className={classes.person}>
+                  <Typography
+                      className={classes.name}
+                      variant="body1"
+                  >
                     Hello world
-                </Typography>
-                <Typography
-                  className={classes.bio}
-                  variant="body2"
-                >
+                  </Typography>
+                  <Typography
+                      className={classes.bio}
+                      variant="body2"
+                  >
                     Admin dashboard
-                </Typography>
+                  </Typography>
+                </div>
               </div>
             </div>
-          </div>
-        </Grid>
-        <Grid
-          className={classes.content}
-          item
-          lg={7}
-          xs={12}
-        >
-          <div className={classes.content}>
-            <div className={classes.contentHeader}>
-              <IconButton>
-                <ArrowBackIcon />
-              </IconButton>
-            </div>
-            <div className={classes.contentBody}>
-              <form
-                className={classes.form}
-                onSubmit={handleSignIn}
-              >
-                <Typography
-                  className={classes.title}
-                  variant="h2"
+          </Grid>
+          <Grid
+              className={classes.content}
+              item
+              lg={7}
+              xs={12}
+          >
+            <div className={classes.content}>
+              <div className={classes.contentHeader}>
+                <IconButton>
+                  <ArrowBackIcon />
+                </IconButton>
+              </div>
+              <div className={classes.contentBody}>
+                <form
+                    className={classes.form}
+                    onSubmit={handleSignIn}
                 >
+                  <Typography
+                      className={classes.title}
+                      variant="h2"
+                  >
                     Sign in
-                </Typography>
-                <Grid
-                  className={classes.socialButtons}
-                  container
-                  spacing={2}
-                >
-                <TextField
-                  className={classes.textField}
-                  error={hasError('email')}
-                  fullWidth
-                  helperText={
-                    hasError('email') ? formState.errors.email[0] : null
-                  }
-                  label="Email address"
-                  name="email"
-                  onChange={handleChange}
-                  type="text"
-                  value={formState.values.email || ''}
-                  variant="outlined"
-                  onFocus={clearLoginError}
-                />
-                <TextField
-                  className={classes.textField}
-                  error={hasError('password')}
-                  fullWidth
-                  helperText={
-                    hasError('password') ? formState.errors.password[0] : null
-                  }
-                  label="Password"
-                  name="password"
-                  onChange={handleChange}
-                  type="password"
-                  value={formState.values.password || ''}
-                  variant="outlined"
-                  onFocus={clearLoginError}
-                />
-                { formState.loginError && <Error error={formState.loginError}/> }
-                <Button
-                  className={classes.signInButton}
-                  color="primary"
-                  disabled={!formState.isValid}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                >
-                    Sign in now
-                </Button>
-                </Grid>
-              </form>
+                  </Typography>
+                  <Grid
+                      className={classes.socialButtons}
+                      container
+                      spacing={2}
+                  >
+                    <TextField
+                        className={classes.textField}
+                        error={hasError('email')}
+                        fullWidth
+                        helperText={
+                          hasError('email') ? formState.errors.email[0] : null
+                        }
+                        label="Email address"
+                        name="email"
+                        onChange={handleChange}
+                        type="text"
+                        value={formState.values.email || ''}
+                        variant="outlined"
+                        onFocus={clearLoginError}
+                    />
+                    <TextField
+                        className={classes.textField}
+                        error={hasError('password')}
+                        fullWidth
+                        helperText={
+                          hasError('password') ? formState.errors.password[0] : null
+                        }
+                        label="Password"
+                        name="password"
+                        onChange={handleChange}
+                        type="password"
+                        value={formState.values.password || ''}
+                        variant="outlined"
+                        onFocus={clearLoginError}
+                    />
+                    { formState.loginError && <Error error={formState.loginError}/> }
+                    <Button
+                        className={classes.signInButton}
+                        color="primary"
+                        disabled={!formState.isValid}
+                        fullWidth
+                        size="large"
+                        type="submit"
+                        variant="contained"
+                    >
+                      Sign in now
+                    </Button>
+                  </Grid>
+                </form>
+              </div>
             </div>
-          </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
   );
 };
 
@@ -326,7 +326,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    userLogin: (email, password) => dispatch(userActions.login(email, password))
+    userLogin: (email, password) => dispatch(userActions.login(email, password)),
+    getCurrentUser: () => dispatch(profileActions.getCurrentUser())
   }
 }
 

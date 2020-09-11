@@ -8,6 +8,7 @@ function login(email, password) {
     try {
       const data = await userService.login(email, password);
       dispatch(success(data));
+      return data;
     } catch (error) {
       dispatch(failure(error));
       throw error;
@@ -19,6 +20,25 @@ function login(email, password) {
   function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 
+function refreshToken(refreshToken) {
+  return async dispatch => {
+    try {
+      const user = await userService.refreshToken(refreshToken)
+      dispatch({
+        type: userConstants.LOGIN_SUCCESS,
+        user
+      })
+      return user
+    } catch (error) {
+      dispatch({
+        type: userConstants.LOGIN_FAILURE,
+        error
+      })
+      throw error;
+    }
+  }
+}
+
 function logout() {
   navigate('/login')
   return { type: userConstants.LOGOUT };
@@ -26,5 +46,6 @@ function logout() {
 
 export const userActions = {
   login,
-  logout
+  logout,
+  refreshToken
 }

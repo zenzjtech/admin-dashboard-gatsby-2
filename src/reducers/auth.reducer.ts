@@ -19,7 +19,8 @@ export function auth(state = initialState, action) {
       };
     case userConstants.LOGIN_FAILURE:
       return {
-        ...state
+        ...state,
+        loggedIn: false
       };
     case userConstants.LOGOUT:
       return {
