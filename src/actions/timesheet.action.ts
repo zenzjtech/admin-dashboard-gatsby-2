@@ -1,4 +1,5 @@
 import { timesheetServices } from '../services/timesheet.service'
+import { timesheetConstants } from '../constants'
 
 function getAllTimesheet() {
 	return async (dispatch, getState) => {
@@ -14,6 +15,13 @@ function getAllTimesheet() {
 	}
 }
 
+function setCurrentTimesheet(timesheet) {
+	return {
+		type: timesheetConstants.SET_CURRENT_TIMESHEET,
+		payload: timesheet
+	}
+}
 export const timesheetActions = {
-	getAllTimesheet
+	getAllTimesheet,
+	setCurrentTimesheet
 }
