@@ -113,10 +113,10 @@ function CollapsibleTable(props) {
                         <TableCell>Client</TableCell>
                         <TableCell align="right">Job Id</TableCell>
                         <TableCell align="right">Job name</TableCell>
-                         <TableCell align="right">Start</TableCell>
+                        <TableCell align="right">Start</TableCell>
                         <TableCell align="right">End</TableCell>
-						<TableCell align="right">Frequency</TableCell>
-						<TableCell align="right">Last Timesheet</TableCell>
+                        <TableCell align="right">Frequency</TableCell>
+                        <TableCell align="right">Last Timesheet</TableCell>
                         <TableCell align="right">Status</TableCell>
                     </TableRow>
                 </TableHead>
@@ -124,8 +124,8 @@ function CollapsibleTable(props) {
                     {timesheet
                         .sort((a, b) => new Date(b.starts) - new Date(a.starts))
                         .map((ts) => (
-                        <Row key={ts.id} row={ts} />
-                    ))}
+                            <Row key={ts.id} row={ts} />
+                        ))}
                 </TableBody>
             </Table>
         </TableContainer>
