@@ -13,12 +13,28 @@ function getAllTimesheet(userId, accessToken) {
 	return fetch(`${apiUrl}/timesheet/user/${userId}/get`, requestOptions)
 		.then(handleResponse)
 		.then(data => {
-			// store user details and jwt token in local storage to keep user logged in between page refreshes
-			// typeof window !== "undefined" && localStorage.setItem(userConstants.KEY_USER, JSON.stringify(data.token));
+			return data;
+		});
+}
+
+function updateTimesheet(timesheet, accessToken) {
+	const requestOptions = {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${accessToken}`
+		},
+		body: JSON.stringify(timesheet)
+	};
+
+	return fetch(`${apiUrl}/timesheet/month/update`, requestOptions)
+		.then(handleResponse)
+		.then(data => {
 			return data;
 		});
 }
 
 export const timesheetServices = {
-	getAllTimesheet
+	getAllTimesheet,
+	updateTimesheet
 };

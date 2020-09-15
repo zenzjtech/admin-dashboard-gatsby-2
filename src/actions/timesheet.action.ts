@@ -21,7 +21,22 @@ function setCurrentTimesheet(timesheet) {
 		payload: timesheet
 	}
 }
+
+function updateTimeSheet(timesheet) {
+	return async (dispatch, getState) => {
+		const state = getState();
+		const accessToken = state.auth.user.accessToken;
+		try {
+			const allTimesheet = await timesheetServices.updateTimesheet(timesheet, accessToken);
+			return allTimesheet
+		} catch (error) {
+			throw error;
+		}
+	}
+}
+
 export const timesheetActions = {
 	getAllTimesheet,
-	setCurrentTimesheet
+	setCurrentTimesheet,
+	updateTimeSheet
 }

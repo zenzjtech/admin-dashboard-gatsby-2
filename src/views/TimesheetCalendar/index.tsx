@@ -3,42 +3,83 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+import { Card, CardContent, FormControl, Grid, Input, InputLabel, Typography } from '@material-ui/core'
+
+import { timesheetHelper } from '../../helpers';
+import { timesheet } from '../../reducers/timesheet.reducer'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: theme.spacing(4)
+	},
+	headerText: {
+		textAlign: 'center'
 	}
 }))
 
 const TimesheetCalendar = props => {
-	const { currentTimesheet} = props;
+	const { currentTimesheet } = props;
 	const classes = useStyles();
-	const [value, setValue] = useState(new Date());
-	function onChange(nextValue) {
-		setValue(nextValue);
+	const [currentDate, setCurrentDate] = useState(timesheetHelper.getEarliestReport(currentTimesheet));
+	const [workload, setWorkload] = useState(0);
+
+	function onDateChange(nextValue) {
+		setCurrentDate(nextValue);
+		setWorkload(timesheetHelper.getWorkloadByDate(currentTimesheet, nextValue) || 0);
 	}
 	console.log(currentTimesheet);
-	const getWorkDurationByDate = (date) => {
-		const found = currentTimesheet.dailyReports.find(
-			ts => {
-				const tsDate = new Date(ts.day);
-				return ts.key == date.getDate() && tsDate.getMonth() + 1 === date.getMonth()
-			}
-		);
-		if (found)
-			return found.workDuration;
-		return null;
-	}
 	return (
 		<div className={classes.root}>
-			<Calendar
-				onChange={onChange}
-				value={value}
-				tileContent={
-					({ activeStartDate, date, view }) => view === 'month' ?
-						<p style={{font: "italic"}}>{getWorkDurationByDate(date)}</p> : null
-				}
-			/>
+			<Grid
+				container
+				spacing={4}
+			>
+				<Grid
+					item
+					lg={4}
+					md={6}
+					xl={4}
+					xs={12}
+				>
+					<Calendar
+						onChange={onDateChange}
+						value={currentDate}
+						tileContent={
+							({ date, view }) => view === 'month' ?
+								<p style={{font: "italic"}}>{timesheetHelper.getWorkloadByDate(currentTimesheet, date)}</p> : null
+						}
+					/>
+				</Grid>
+				<Grid
+					item
+					lg={6}
+					md={6}
+					xl={8}
+					xs={12}
+				>
+					<Card>
+						<CardContent>
+							<Typography
+								variant={"h4"}
+								component={"h4"}
+								className={classes.headerText}
+							>
+								Edit daily timesheet
+							</Typography>
+							<form>
+								<FormControl>
+									<InputLabel htmlFor="component-simple">Workload (hours) </InputLabel>
+									<Input
+										id="component-simple"
+										value={workload}
+										type={"number"}
+										onChange={(e) => setWorkload(parseInt(e.target.value))} />
+								</FormControl>
+							</form>
+						</CardContent>
+					</Card>
+				</Grid>
+			</Grid>
 		</div>
 	)
 }

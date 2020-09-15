@@ -17,7 +17,7 @@ const Account = () => {
     <div className={classes.root}>
       <Grid
         container
-        spacing={2}
+        spacing={4}
       >
         <Grid
           item
