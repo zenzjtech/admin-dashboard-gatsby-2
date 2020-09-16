@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Topbar = props => {
-  const { className, onSidebarOpen, ...rest } = props;
+  const { className, onSidebarOpen, logout, ...rest } = props;
   
   const classes = useStyles();
   
@@ -57,7 +57,7 @@ const Topbar = props => {
             <Tooltip title="Click here to logout" TransitionComponent={Zoom}>
               <IconButton
                   className={classes.signOutButton}
-                  onClick={() => props.logout()}
+                  onClick={() => logout()}
                   color="inherit"
               >
                 <InputIcon />
