@@ -8,7 +8,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline} from '@material-ui/core'
 import theme from './theme';
 import Store from './store';
-import { configureFakeBackend } from 'helpers';
+import PageError from './components/Error/PageError'
 
 const history = typeof window  === 'undefined' ? createMemoryHistory() : createBrowserHistory();
 
@@ -31,6 +31,7 @@ export default ({ element }) => {
 					persistor={Store.persistor}
 				>
 					<CssBaseline/>
+					<PageError/>
 					<Router history={history}>
 						{ element }
 					</Router>

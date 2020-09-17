@@ -1,7 +1,6 @@
 import React from 'react'
 import { navigate } from 'gatsby'
 import { connect } from 'react-redux'
-import PageError from '../components/Error/PageError';
 
 const PrivateRoute = ({ loggedIn, location, component: Component, ...rest}) => {
 	if (!loggedIn && location.pathname !== '/login') {
@@ -10,10 +9,7 @@ const PrivateRoute = ({ loggedIn, location, component: Component, ...rest}) => {
 	}
 
 	return (
-		<React.Fragment>
-			<PageError/>
-			<Component {...rest}/>
-		</React.Fragment>
+		<Component {...rest}/>
 	)
 }
 
