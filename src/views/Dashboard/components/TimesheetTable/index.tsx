@@ -13,6 +13,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 import { timesheetActions } from '../../../../actions'
 import { Link } from '@material-ui/core'
+import { navigate } from '@reach/router'
 
 const useRowStyles = makeStyles({
 	root: {
@@ -33,7 +34,13 @@ function Row(props) {
 					{row.userid}
 				</TableCell>
 				<TableCell align="right">
-					<Link href="/calendar" onClick={() => { setCurrentTimesheet(row)} }>
+					<Link href="/calendar"
+						  onClick={(e) => {
+							  e.preventDefault();
+							  setCurrentTimesheet(row)
+							  navigate('/calendar')
+						  }}
+					>
 						{row.key}
 					</Link>
 				</TableCell>
