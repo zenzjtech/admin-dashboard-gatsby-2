@@ -20,10 +20,11 @@ function login(email, password) {
   function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 
-function refreshToken(refreshToken) {
-  return async dispatch => {
+function refreshToken() {
+  return async (dispatch, getState) => {
     try {
-      const user = await userService.refreshToken(refreshToken)
+      const state = getState();
+      const user = await userService.refreshToken(state.auth.user.refreshToken)
       dispatch({
         type: userConstants.LOGIN_SUCCESS,
         user

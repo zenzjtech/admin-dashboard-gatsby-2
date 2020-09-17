@@ -14,7 +14,7 @@ import {
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { profileActions, userActions } from '../../actions'
-import Error from '../Error'
+import Error from '../Error/Error'
 
 const schema = {
   email: {

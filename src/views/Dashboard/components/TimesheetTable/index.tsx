@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -9,9 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
-import { timesheetActions } from '../../../../actions'
+import { timesheetActions, userActions, appActions } from '../../../../actions'
 import { Link } from '@material-ui/core'
 import { navigate } from '@reach/router'
 
@@ -30,16 +27,14 @@ function Row(props) {
 	return (
 		<React.Fragment>
 			<TableRow className={classes.root}>
-				<TableCell component="th" scope="row">
-					{row.userid}
-				</TableCell>
 				<TableCell align="right">
-					<Link href="/calendar"
-						  onClick={(e) => {
-							  e.preventDefault();
-							  setCurrentTimesheet(row)
-							  navigate('/calendar')
-						  }}
+					<Link
+						href="/calendar"
+						onClick={(e) => {
+							e.preventDefault();
+							setCurrentTimesheet(row)
+							navigate('/calendar')
+						}}
 					>
 						{row.key}
 					</Link>
@@ -57,13 +52,29 @@ function Row(props) {
 
 
 function CollapsibleTable(props) {
-	const { getAllTimesheet, setCurrentTimesheet } = props;
+	const { getAllTimesheet,
+		setCurrentTimesheet,
+		refreshToken,
+		showError
+	} = props;
 	const [timesheet, setTimesheet] = useState([]);
 
 	useEffect(() => {
 		(async () => {
-			const response = await getAllTimesheet();
-			setTimesheet(response.content);
+			// If user is already logged in, we will check
+			// if the token has yet to expired.
+			try {
+				try {
+					await refreshToken()
+				} catch (e) {
+					showError('Your login has expired, please relogin at the login page' );
+					return;
+				}
+				const response = await getAllTimesheet();
+				setTimesheet(response.content);
+			} catch (e) {
+				showError('There is some errors loading content, please check again at later time')
+			}
 		})()
 	}, []);
 
@@ -72,7 +83,6 @@ function CollapsibleTable(props) {
 			<Table aria-label="collapsible table">
 				<TableHead>
 					<TableRow>
-						<TableCell>Client</TableCell>
 						<TableCell align="right">Job Id</TableCell>
 						<TableCell align="right">Job name</TableCell>
 						<TableCell align="right">Start</TableCell>
@@ -103,7 +113,9 @@ function CollapsibleTable(props) {
 const mapDispatchToProps = dispatch => {
 	return {
 		getAllTimesheet: () => dispatch(timesheetActions.getAllTimesheet()),
-		setCurrentTimesheet: (ts) => dispatch(timesheetActions.setCurrentTimesheet(ts))
+		setCurrentTimesheet: (ts) => dispatch(timesheetActions.setCurrentTimesheet(ts)),
+		refreshToken: () => dispatch(userActions.refreshToken()),
+		showError: (message) => dispatch(appActions.showError(message))
 	}
 }
 
